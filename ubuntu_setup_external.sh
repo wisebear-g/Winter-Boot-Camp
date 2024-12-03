@@ -71,45 +71,45 @@ inject_string_to_file() {
     fi
 }
 
-# DNS setup
-cd $HOME_USER
-echo "DNS setup"
-WSL_CONF="/etc/wsl.conf"
-inject_string_to_file "$WSL_CONF" "[network]"
-inject_string_to_file "$WSL_CONF" "generateResolvConf = false"
+# # DNS setup
+# cd $HOME_USER
+# echo "DNS setup"
+# WSL_CONF="/etc/wsl.conf"
+# inject_string_to_file "$WSL_CONF" "[network]"
+# inject_string_to_file "$WSL_CONF" "generateResolvConf = false"
 
-RESOLV_CONF="/etc/resolv.conf"
-inject_string_to_file "$RESOLV_CONF" "nameserver 12.26.2.228"
-chattr +i /etc/resolv.conf
+# RESOLV_CONF="/etc/resolv.conf"
+# inject_string_to_file "$RESOLV_CONF" "nameserver 12.26.2.228"
+# chattr +i /etc/resolv.conf
 
 
-# Adding proxy if it is not configured
-cd $HOME_USER
-echo "Adding bash proxy configuration..."
-BASHRC_FILE="/home/$CURRENT_USER/.bashrc"
+# # Adding proxy if it is not configured
+# cd $HOME_USER
+# echo "Adding bash proxy configuration..."
+# BASHRC_FILE="/home/$CURRENT_USER/.bashrc"
 
-inject_string_to_file "$BASHRC_FILE" "export http_proxy=http://12.26.204.100:8080"
-inject_string_to_file "$BASHRC_FILE" "export https_proxy=http://12.26.204.100:8080"
-inject_string_to_file "$BASHRC_FILE" "export no_proxy=127.0.0.1,::1,localhost,samsung.com,samsungds.net,*.samsung.com,*.samsungds.net,12.0.0.0/8,10.0.0.0/8,192.0.0.0/8,172.0.0.0/8"
+# inject_string_to_file "$BASHRC_FILE" "export http_proxy=http://12.26.204.100:8080"
+# inject_string_to_file "$BASHRC_FILE" "export https_proxy=http://12.26.204.100:8080"
+# inject_string_to_file "$BASHRC_FILE" "export no_proxy=127.0.0.1,::1,localhost,samsung.com,samsungds.net,*.samsung.com,*.samsungds.net,12.0.0.0/8,10.0.0.0/8,192.0.0.0/8,172.0.0.0/8"
 
-export http_proxy=http://12.26.204.100:8080
-export https_proxy=http://12.26.204.100:8080
-export no_proxy=127.0.0.1,::1,localhost,samsung.com,samsungds.net,*.samsung.com,*.samsungds.net,12.0.0.0/8,10.0.0.0/8,192.0.0.0/8,172.0.0.0/8
+# export http_proxy=http://12.26.204.100:8080
+# export https_proxy=http://12.26.204.100:8080
+# export no_proxy=127.0.0.1,::1,localhost,samsung.com,samsungds.net,*.samsung.com,*.samsungds.net,12.0.0.0/8,10.0.0.0/8,192.0.0.0/8,172.0.0.0/8
 
-cd $HOME_USER
-source .bashrc
+# cd $HOME_USER
+# source .bashrc
 
-# Install certificate
-echo "Install samsung certificate to system"
-#rm samsungsemi-prx.crt
-wget https://mwebdev.samsungds.net/static/files/samsungsemi-prx.crt --no-check-certificate
-sudo cp -f samsungsemi-prx.crt /usr/local/share/ca-certificates/samsungsemi-prx.crt
-update-ca-certificates
+# # Install certificate
+# echo "Install samsung certificate to system"
+# #rm samsungsemi-prx.crt
+# wget https://mwebdev.samsungds.net/static/files/samsungsemi-prx.crt --no-check-certificate
+# sudo cp -f samsungsemi-prx.crt /usr/local/share/ca-certificates/samsungsemi-prx.crt
+# update-ca-certificates
 
-# Add apt proxy setting
-APT_PROXY_FILE="/etc/apt/apt.conf.d/proxy.conf"
-inject_string_to_file "$APT_PROXY_FILE" "Acquire::http::Proxy \"http://12.26.204.100:8080\";"
-inject_string_to_file "$APT_PROXY_FILE" "Acquire::https::Proxy \"http://12.26.204.100:8080\";"
+# # Add apt proxy setting
+# APT_PROXY_FILE="/etc/apt/apt.conf.d/proxy.conf"
+# inject_string_to_file "$APT_PROXY_FILE" "Acquire::http::Proxy \"http://12.26.204.100:8080\";"
+# inject_string_to_file "$APT_PROXY_FILE" "Acquire::https::Proxy \"http://12.26.204.100:8080\";"
 
 echo "Install packages from apt. it will take few minutes"
 apt update
@@ -197,34 +197,34 @@ chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.vscode-server
 echo "Settings updated successfully."
 
 
-echo "Python package manager proxy setup"
-cd $HOME_USER
-mkdir .pip
-PIP_CONF="/home/$CURRENT_USER/.pip/pip.conf"
+# echo "Python package manager proxy setup"
+# cd $HOME_USER
+# mkdir .pip
+# PIP_CONF="/home/$CURRENT_USER/.pip/pip.conf"
 
-inject_string_to_file "$PIP_CONF" "[global]"
-inject_string_to_file "$PIP_CONF" "index-url = http://repo.samsungds.net/artifactory/api/pypi/pypi-remote/simple"
-inject_string_to_file "$PIP_CONF" "trusted-host = repo.samsungds.net"
-inject_string_to_file "$PIP_CONF" "proxy ="
+# inject_string_to_file "$PIP_CONF" "[global]"
+# inject_string_to_file "$PIP_CONF" "index-url = http://repo.samsungds.net/artifactory/api/pypi/pypi-remote/simple"
+# inject_string_to_file "$PIP_CONF" "trusted-host = repo.samsungds.net"
+# inject_string_to_file "$PIP_CONF" "proxy ="
 
-pip install protobuf==4.25.3
+# pip install protobuf==4.25.3
 
-cd $HOME_USER
-mkdir Workspace
-cd Workspace
-git clone -c http.sslVerify=false --recursive https://github.samsungds.net/A-Project/A-DEVICE a-device
+# cd $HOME_USER
+# mkdir Workspace
+# cd Workspace
+# git clone -c http.sslVerify=false --recursive https://github.samsungds.net/A-Project/A-DEVICE a-device
 
-chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/Workspace
+# chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/Workspace
 
-read -p "Default setting had done. Do you want to install STM32CubeMX on linux? [Y/n] " input
+# read -p "Default setting had done. Do you want to install STM32CubeMX on linux? [Y/n] " input
 
-input_lower=$(echo "$input" | tr '[:upper:]' '[:lower:]')
+# input_lower=$(echo "$input" | tr '[:upper:]' '[:lower:]')
 
-# 입력값 검사
-if [[ "$input_lower" == "y" || "$input_lower" == "yes" ]]; then
-    cd $HOME_USER/Workspace/a-device/Scripts
-    chmod +x ubuntu_cubemx.sh
-    ./ubuntu_cubemx.sh
-else
-    echo "Skip STM32CubeMX installation"
-fi
+# # 입력값 검사
+# if [[ "$input_lower" == "y" || "$input_lower" == "yes" ]]; then
+#     cd $HOME_USER/Workspace/a-device/Scripts
+#     chmod +x ubuntu_cubemx.sh
+#     ./ubuntu_cubemx.sh
+# else
+#     echo "Skip STM32CubeMX installation"
+# fi
